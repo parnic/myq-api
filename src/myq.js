@@ -2,58 +2,7 @@
 const axios = require('axios');
 
 const constants = require('./constants');
-
-class ErrorHandler {
-  static parseBadResponse(response) {
-    if (!response) {
-      return ErrorHandler.returnError(12, null, response);
-    }
-
-    const { data, status } = response;
-    if (!status) {
-      return ErrorHandler.returnError(12, null, data);
-    }
-    if (status === 500) {
-      return ErrorHandler.returnError(15);
-    }
-    if ([400, 401].includes(status)) {
-      if (data.code === '401.205') {
-        return ErrorHandler.returnError(16, null, data);
-      }
-      if (data.code === '401.207') {
-        return ErrorHandler.returnError(17, null, data);
-      }
-      return ErrorHandler.returnError(14, null, data);
-    }
-    if (status === 404) {
-      // Return an error for a bad serial number.
-      if (data.code === '404.401') {
-        return ErrorHandler.returnError(18, null, data);
-      }
-
-      // Handle generic 404 errors, likely indicating something wrong with this implementation.
-      return ErrorHandler.returnError(20);
-    }
-
-    return ErrorHandler.returnError(11, null, data);
-  }
-
-  static returnError(returnCode, error, response) {
-    const result = {
-      returnCode,
-      message: constants.errorMessages[returnCode],
-      providerMessage: null,
-      unhandledError: null,
-    };
-    if (response && response.description) {
-      result.providerMessage = response.description;
-    }
-    if (error) {
-      result.unhandledError = error;
-    }
-    return Promise.resolve(result);
-  }
-}
+const { ErrorHandler } = require('./errorhandler');
 
 class MyQ {
   // Build the object and initialize any properties we're going to use.
@@ -73,7 +22,7 @@ class MyQ {
       Username: this.username,
       Password: this.password,
     })
-      .then(originalResponse => {
+      .then((originalResponse) => {
         const { response, returnCode } = originalResponse;
         if (returnCode !== 0) {
           throw originalResponse;
@@ -137,7 +86,7 @@ class MyQ {
       params,
     };
 
-    return axios(config).then(response => ({
+    return axios(config).then((response) => ({
       returnCode: 0,
       response,
     }));
@@ -145,7 +94,7 @@ class MyQ {
 
   getAccountInfo() {
     return this.executeRequest(constants.routes.account, 'get', { expand: 'account' })
-      .then(returnValue => {
+      .then((returnValue) => {
         if (returnValue.returnCode !== 0) {
           return returnValue;
         }
@@ -167,7 +116,7 @@ class MyQ {
     }
 
     let typeIds = Array.isArray(typeIdParams) ? typeIdParams : [typeIdParams];
-    typeIds = typeIds.filter(typeId => typeof typeId !== 'undefined');
+    typeIds = typeIds.filter((typeId) => typeof typeId !== 'undefined');
 
     for (let i = 0; i < typeIds.length; i += 1) {
       const typeId = typeIds[i];
@@ -183,7 +132,7 @@ class MyQ {
           'get'
         )
       )
-      .then(returnValue => {
+      .then((returnValue) => {
         if (returnValue.returnCode !== 0 && typeof returnValue.returnCode !== 'undefined') {
           return returnValue;
         }
@@ -202,7 +151,7 @@ class MyQ {
         };
 
         const modifiedDevices = [];
-        Object.values(devices).forEach(device => {
+        Object.values(devices).forEach((device) => {
           const modifiedDevice = {
             family: device.device_family,
             name: device.name,
@@ -238,8 +187,8 @@ class MyQ {
 
   getDeviceState(serialNumber, attributeName) {
     return this.getDevices()
-      .then(response => {
-        const device = (response.devices || []).find(d => d.serialNumber === serialNumber);
+      .then((response) => {
+        const device = (response.devices || []).find((d) => d.serialNumber === serialNumber);
         if (!device) {
           return ErrorHandler.returnError(18);
         } else if (!(attributeName in device)) {
@@ -257,7 +206,7 @@ class MyQ {
 
   getDoorState(serialNumber) {
     return this.getDeviceState(serialNumber, 'doorState')
-      .then(result => {
+      .then((result) => {
         if (result.returnCode !== 0) {
           return result;
         }
@@ -272,7 +221,7 @@ class MyQ {
 
   getLightState(serialNumber) {
     return this.getDeviceState(serialNumber, 'lightState')
-      .then(result => {
+      .then((result) => {
         if (result.returnCode !== 0) {
           return result;
         }
@@ -302,7 +251,7 @@ class MyQ {
           { action_type: action }
         )
       )
-      .then(returnValue => {
+      .then((returnValue) => {
         const { returnCode } = returnValue;
         if (returnCode !== 0 && typeof returnCode !== 'undefined') {
           return returnValue;
