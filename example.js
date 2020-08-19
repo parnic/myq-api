@@ -1,4 +1,4 @@
-const { myQ, constants } = require('myq-api');
+const { myQ, constants } = require('./index');
 
 var account = new myQ('email', 'password');
 
