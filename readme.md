@@ -2,12 +2,6 @@
 
 Interface with your [MyQ](https://www.liftmaster.com/for-homes/myq-connected-home) devices. Works and tested with both Chamberlain and LiftMaster.
 
----
-
-#### NOTE: This package is currently not working. A new update will be released after [this pull request](https://github.com/thomasmunduchira/myq-api/pull/3) is merged in.
-
----
-
 ## Installation
 
 ```bash
@@ -26,6 +20,7 @@ Initialize credentials of the user using email and password.
 | password   | true     | String | User password   |
 
 Example code:
+
 ```js
 var { myQ, constants } = require('myq-api');
 var account = new myQ('email', 'password');
@@ -36,6 +31,7 @@ var account = new myQ('email', 'password');
 Logs into the MyQ account and generates a security token. This security token must be generated before you access the rest of this API. Note that this security token is short-term and will not work after some time.
 
 Example code:
+
 ```js
 account.login()
   .then(function (result) {
@@ -46,6 +42,7 @@ account.login()
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   "returnCode": 0,
@@ -63,6 +60,7 @@ See Possible Values for more information.
 | typeIds   | false    | Type Name  | Either an array of Type names or a singular Type name. |
 
 Example code:
+
 ```js
 // Optionally, pass in device types to filter them.
 // If none are specified, all devices will be returned.
@@ -79,6 +77,7 @@ account.getDevices([
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   returnCode: 0,
@@ -112,6 +111,7 @@ Retrieves the latest state of the requested door.
 | id        | true     | Integer | Door ID |
 
 Example code:
+
 ```js
 account.getDoorState(door.serialNumber)
   .then(function (result) {
@@ -122,6 +122,7 @@ account.getDoorState(door.serialNumber)
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   "returnCode": 0,
@@ -138,6 +139,7 @@ Retrieves the latest state of the requested light.
 | id        | true     | Integer | Light ID |
 
 Example code:
+
 ```js
 account.getLightState(light.id)
   .then(function (result) {
@@ -148,6 +150,7 @@ account.getLightState(light.id)
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   "returnCode": 0,
@@ -165,6 +168,7 @@ Set the requested door to open or close. Returns a confirmation once complete. N
 | toggle       | true     | Boolean     | true or false                     |
 
 Example code:
+
 ```js
 account.setDoorState(door.serialNumber, true)
   .then(function (result) {
@@ -175,6 +179,7 @@ account.setDoorState(door.serialNumber, true)
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   "returnCode": 0
@@ -191,6 +196,7 @@ Set the requested light to on or off. Returns a confirmation once complete.
 | turnOn        | true     | Boolean      | Whether the light should be on or off |
 
 Example code:
+
 ```js
 account.setLightState(light.serialNumber, 1)
   .then(function (result) {
@@ -201,6 +207,7 @@ account.setLightState(light.serialNumber, 1)
 ```
 
 Example returned object if call is successful:
+
 ```js
 {
   "returnCode": 0
@@ -275,6 +282,7 @@ Each call to the API will include a return code as well as an error message if a
 | 17          | User is locked out due to too many tries. Please reset password and try again.  |
 
 Example returned object if call is unsuccessful:
+
 ```js
 {
   returnCode: 14,
@@ -283,6 +291,7 @@ Example returned object if call is unsuccessful:
 ```
 
 Since the underlying MyQ API is volatile, there might be changes unforeseen by the current version of this software. An extra message detailing the request error that it encountered will be returned whenever possible.
+
 ```js
 {
   returnCode: 11,
@@ -290,6 +299,7 @@ Since the underlying MyQ API is volatile, there might be changes unforeseen by t
   unhandledError: // request error
 }
 ```
+
 Please create a GitHub issue when this happens.
 
 ## Promises
@@ -300,6 +310,7 @@ If your environment doesn't support ES6 Promises, you can [polyfill](https://git
 ## Contributing
 
 If you would like to contribute enhancements or fixes, please do the following:
+
 1. Fork the repository and clone it locally.
 2. Make your changes.
 3. Create a pull request.
